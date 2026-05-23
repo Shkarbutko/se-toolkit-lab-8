@@ -1,30 +1,74 @@
 # Lab 8 Task 1 Report
 
-## Part A: Nanobot setup
+## Task 1A — Bare agent
 
-I initialized a local `nanobot` project inside the repository and configured it to use the local OpenAI-compatible LLM endpoint at `http://localhost:42005/v1`. The agent was tested from the CLI with a question about the agentic loop. The response showed that the agent could call the configured LLM and produce a normal answer.
+Command:
 
-## Part B: MCP LMS tools
+```bash
+cd ~/se-toolkit-lab-8/nanobot
+uv run nanobot agent --logs --session cli:task1a-loop -c ./config.json -m "What is the agentic loop?"
 
-I installed the local `mcp-lms` package in editable mode and added an `lms` MCP server to `nanobot/config.json`. The server connects to the LMS backend at `http://localhost:42002` using the configured API key.
+Actual response copied from terminal:
 
-The agent registered 9 LMS tools:
-- health
-- labs
-- learners
-- pass rates
-- timeline
-- groups
-- top learners
-- completion rate
-- sync pipeline
+The agentic loop is the fundamental cycle that AI agents follow to perceive, reason, act, and learn. It is the core pattern that enables autonomous behavior.
 
-I verified the tools by asking what labs are available. The agent called the LMS labs tool and returned real lab names from the backend. I also asked whether the LMS backend is healthy, and the agent called the LMS health tool and reported that the backend was healthy.
+The basic loop is:
 
-## Part C: LMS skill
+Observe → Reason → Act → Reflect → repeat
 
-I added `SKILL_LMS.md` with instructions for using LMS tools instead of guessing. The skill tells the agent to use live backend data for labs, scores, pass rates, completion, groups, timelines, and health checks. I referenced this skill from `AGENTS.md`.
+Observe: gather input from the environment.
+Reason: analyze the situation and plan next steps.
+Act: execute the chosen action.
+Reflect: evaluate the outcome and continue the loop.
 
-## Notes
+This confirmed that the bare nanobot agent can call the configured LLM endpoint.
 
-The OpenAI-compatible endpoint is provided by a local LiteLLM service on port 42005. The LMS backend is available on port 42002. The MCP tools allow the agent to answer LMS questions using real backend data.
+Task 1B — Agent with LMS tools
+
+Command:
+
+cd ~/se-toolkit-lab-8/nanobot
+uv run nanobot agent --logs --session cli:task1b-labs -c ./config.json -m "What labs are available?"
+
+Actual response copied from terminal:
+
+The following labs are available:
+
+Lab 01 – Products, Architecture & Roles
+Lab 02 — Run, Fix, and Deploy a Backend Service
+Lab 03 — Backend API: Explore, Debug, Implement, Deploy
+Lab 04 — Testing, Front-end, and AI Agents
+Lab 05 — Data Pipeline and Analytics Dashboard
+Lab 06 — Build Your Own Agent
+Lab 07 — Build a Client with an AI Coding Agent
+lab-08
+
+Tool evidence copied from terminal logs:
+
+MCP server 'lms': connected, 9 tools registered.
+Tool call: mcp_lms_lms_labs({})
+
+Health check response copied from terminal:
+
+The LMS backend is healthy and has 56 items.
+
+Task 1C — Skill prompt
+
+I created the LMS skill prompt at:
+
+nanobot/workspace/skills/lms/SKILL.md
+
+The skill instructs the agent to use LMS MCP tools instead of guessing when the user asks about labs, tasks, learners, scores, pass rates, completion rates, groups, timelines, or backend health.
+
+The skill strategy is:
+
+Use mcp_lms_lms_health for backend health.
+Use mcp_lms_lms_labs for lab lists.
+Use mcp_lms_lms_pass_rates for per-task pass rates.
+Use mcp_lms_lms_completion_rate for completion rate questions.
+Use mcp_lms_lms_groups for group comparisons.
+Use mcp_lms_lms_top_learners for top learner questions.
+Use mcp_lms_lms_timeline for timeline questions.
+Use mcp_lms_lms_sync_pipeline only when the user asks to refresh data.
+
+This completed the skill prompt requirement for Task 1.
