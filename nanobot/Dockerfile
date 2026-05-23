@@ -8,6 +8,7 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 COPY nanobot/ /app/nanobot
 COPY mcp/ /app/mcp
+COPY nanobot-websocket-channel/ /app/nanobot-websocket-channel
 
 WORKDIR /app/nanobot
 

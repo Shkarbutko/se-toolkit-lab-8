@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Nanobot WebChat</title>
+</head>
+<body>
+  <h1>Nanobot WebChat</h1>
+  <input id="key" value="my-secret-qwen-key" placeholder="access key">
+  <button onclick="connect()">Connect</button>
+  <br><br>
+  <textarea id="log" rows="20" cols="100"></textarea>
+  <br>
+  <input id="msg" value="What labs are available?" size="80">
+  <button onclick="sendMsg()">Send</button>
+
+<script>
+let ws;
+
+function log(x) {
+  document.getElementById("log").value += x + "\n";
+}
+
+function connect() {
+  const key = document.getElementById("key").value;
+  ws = new WebSocket("ws://" + location.hostname + ":42006/ws?access_key=" + encodeURIComponent(key));
+  ws.onopen = () => log("connected");
+  ws.onmessage = (e) => log("bot: " + e.data);
+  ws.onerror = (e) => log("error");
+  ws.onclose = () => log("closed");
+}
+
+function sendMsg() {
+  const text = document.getElementById("msg").value;
+  log("you: " + text);
+  ws.send(JSON.stringify({content: text}));
+}
+</script>
+</body>
+</html>
