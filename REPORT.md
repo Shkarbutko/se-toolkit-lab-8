@@ -1,50 +1,30 @@
-# Lab 8 — Report
+# Lab 8 Task 1 Report
 
-Paste your checkpoint evidence below. Add screenshots as image files in the repo and reference them with `![description](path)`.
+## Part A: Nanobot setup
 
-## Task 1A — Bare agent
+I initialized a local `nanobot` project inside the repository and configured it to use the local OpenAI-compatible LLM endpoint at `http://localhost:42005/v1`. The agent was tested from the CLI with a question about the agentic loop. The response showed that the agent could call the configured LLM and produce a normal answer.
 
-<!-- Paste the agent's response to "What is the agentic loop?" and "What labs are available in our LMS?" -->
+## Part B: MCP LMS tools
 
-## Task 1B — Agent with LMS tools
+I installed the local `mcp-lms` package in editable mode and added an `lms` MCP server to `nanobot/config.json`. The server connects to the LMS backend at `http://localhost:42002` using the configured API key.
 
-<!-- Paste the agent's response to "What labs are available?" and "Describe the architecture of the LMS system" -->
+The agent registered 9 LMS tools:
+- health
+- labs
+- learners
+- pass rates
+- timeline
+- groups
+- top learners
+- completion rate
+- sync pipeline
 
-## Task 1C — Skill prompt
+I verified the tools by asking what labs are available. The agent called the LMS labs tool and returned real lab names from the backend. I also asked whether the LMS backend is healthy, and the agent called the LMS health tool and reported that the backend was healthy.
 
-<!-- Paste the agent's response to "Show me the scores" (without specifying a lab) -->
+## Part C: LMS skill
 
-## Task 2A — Deployed agent
+I added `SKILL_LMS.md` with instructions for using LMS tools instead of guessing. The skill tells the agent to use live backend data for labs, scores, pass rates, completion, groups, timelines, and health checks. I referenced this skill from `AGENTS.md`.
 
-<!-- Paste a short nanobot startup log excerpt showing the gateway started inside Docker -->
+## Notes
 
-## Task 2B — Web client
-
-<!-- Screenshot of a conversation with the agent in the Flutter web app -->
-
-## Task 3A — Structured logging
-
-<!-- Paste happy-path and error-path log excerpts, VictoriaLogs query screenshot -->
-
-## Task 3B — Traces
-
-<!-- Screenshots: healthy trace span hierarchy, error trace -->
-
-## Task 3C — Observability MCP tools
-
-<!-- Paste agent responses to "any errors in the last hour?" under normal and failure conditions -->
-
-## Task 4A — Multi-step investigation
-
-<!-- Paste the agent's response to "What went wrong?" showing chained log + trace investigation -->
-
-## Task 4B — Proactive health check
-
-<!-- Screenshot or transcript of the proactive health report that appears in the Flutter chat -->
-
-## Task 4C — Bug fix and recovery
-
-<!-- 1. Root cause identified
-     2. Code fix (diff or description)
-     3. Post-fix response to "What went wrong?" showing the real underlying failure
-     4. Healthy follow-up report or transcript after recovery -->
+The OpenAI-compatible endpoint is provided by a local LiteLLM service on port 42005. The LMS backend is available on port 42002. The MCP tools allow the agent to answer LMS questions using real backend data.
