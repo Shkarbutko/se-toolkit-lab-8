@@ -92,6 +92,29 @@ services:
     volumes:
       - client-web-react:/output
 
+  nanobot:
+    build:
+      context: .
+      dockerfile: nanobot/Dockerfile
+      additional_contexts:
+        workspace: .
+    restart: unless-stopped
+    networks:
+      - lms-network
+    volumes:
+      - ./nanobot:/app/nanobot
+      - ./mcp:/app/mcp
+    environment:
+      LLM_API_KEY: sk-local-test
+      LLM_API_BASE_URL: http://qwen-code-api:4000/v1
+      LLM_API_MODEL: coder-model
+      NANOBOT_GATEWAY_CONTAINER_ADDRESS: 0.0.0.0
+      NANOBOT_GATEWAY_CONTAINER_PORT: 8080
+      NANOBOT_LMS_BACKEND_URL: http://backend:8000
+      NANOBOT_LMS_API_KEY: ${LMS_API_KEY}
+    depends_on:
+      - backend
+      - qwen-code-api
   # Task 2A — uncomment and adapt this service after you create repo-local nanobot/.
   # nanobot:
   #   build:
