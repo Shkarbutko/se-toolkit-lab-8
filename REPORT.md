@@ -1,50 +1,74 @@
-# Lab 8 — Report
-
-Paste your checkpoint evidence below. Add screenshots as image files in the repo and reference them with `![description](path)`.
+# Lab 8 Task 1 Report
 
 ## Task 1A — Bare agent
 
-<!-- Paste the agent's response to "What is the agentic loop?" and "What labs are available in our LMS?" -->
+Command:
 
-## Task 1B — Agent with LMS tools
+```bash
+cd ~/se-toolkit-lab-8/nanobot
+uv run nanobot agent --logs --session cli:task1a-loop -c ./config.json -m "What is the agentic loop?"
 
-<!-- Paste the agent's response to "What labs are available?" and "Describe the architecture of the LMS system" -->
+Actual response copied from terminal:
 
-## Task 1C — Skill prompt
+The agentic loop is the fundamental cycle that AI agents follow to perceive, reason, act, and learn. It is the core pattern that enables autonomous behavior.
 
-<!-- Paste the agent's response to "Show me the scores" (without specifying a lab) -->
+The basic loop is:
 
-## Task 2A — Deployed agent
+Observe → Reason → Act → Reflect → repeat
 
-<!-- Paste a short nanobot startup log excerpt showing the gateway started inside Docker -->
+Observe: gather input from the environment.
+Reason: analyze the situation and plan next steps.
+Act: execute the chosen action.
+Reflect: evaluate the outcome and continue the loop.
 
-## Task 2B — Web client
+This confirmed that the bare nanobot agent can call the configured LLM endpoint.
 
-<!-- Screenshot of a conversation with the agent in the Flutter web app -->
+Task 1B — Agent with LMS tools
 
-## Task 3A — Structured logging
+Command:
 
-<!-- Paste happy-path and error-path log excerpts, VictoriaLogs query screenshot -->
+cd ~/se-toolkit-lab-8/nanobot
+uv run nanobot agent --logs --session cli:task1b-labs -c ./config.json -m "What labs are available?"
 
-## Task 3B — Traces
+Actual response copied from terminal:
 
-<!-- Screenshots: healthy trace span hierarchy, error trace -->
+The following labs are available:
 
-## Task 3C — Observability MCP tools
+Lab 01 – Products, Architecture & Roles
+Lab 02 — Run, Fix, and Deploy a Backend Service
+Lab 03 — Backend API: Explore, Debug, Implement, Deploy
+Lab 04 — Testing, Front-end, and AI Agents
+Lab 05 — Data Pipeline and Analytics Dashboard
+Lab 06 — Build Your Own Agent
+Lab 07 — Build a Client with an AI Coding Agent
+lab-08
 
-<!-- Paste agent responses to "any errors in the last hour?" under normal and failure conditions -->
+Tool evidence copied from terminal logs:
 
-## Task 4A — Multi-step investigation
+MCP server 'lms': connected, 9 tools registered.
+Tool call: mcp_lms_lms_labs({})
 
-<!-- Paste the agent's response to "What went wrong?" showing chained log + trace investigation -->
+Health check response copied from terminal:
 
-## Task 4B — Proactive health check
+The LMS backend is healthy and has 56 items.
 
-<!-- Screenshot or transcript of the proactive health report that appears in the Flutter chat -->
+Task 1C — Skill prompt
 
-## Task 4C — Bug fix and recovery
+I created the LMS skill prompt at:
 
-<!-- 1. Root cause identified
-     2. Code fix (diff or description)
-     3. Post-fix response to "What went wrong?" showing the real underlying failure
-     4. Healthy follow-up report or transcript after recovery -->
+nanobot/workspace/skills/lms/SKILL.md
+
+The skill instructs the agent to use LMS MCP tools instead of guessing when the user asks about labs, tasks, learners, scores, pass rates, completion rates, groups, timelines, or backend health.
+
+The skill strategy is:
+
+Use mcp_lms_lms_health for backend health.
+Use mcp_lms_lms_labs for lab lists.
+Use mcp_lms_lms_pass_rates for per-task pass rates.
+Use mcp_lms_lms_completion_rate for completion rate questions.
+Use mcp_lms_lms_groups for group comparisons.
+Use mcp_lms_lms_top_learners for top learner questions.
+Use mcp_lms_lms_timeline for timeline questions.
+Use mcp_lms_lms_sync_pipeline only when the user asks to refresh data.
+
+This completed the skill prompt requirement for Task 1.
