@@ -188,10 +188,12 @@ services:
       - lms-network
     ports:
       - "127.0.0.1:42005:4000"
+    volumes:
+      - ./litellm-config.yaml:/app/config.yaml
     environment:
       GEMINI_API_KEY: ${QWEN_CODE_API_KEY}
       LITELLM_MASTER_KEY: sk-local-test
-    command: >
+    command: --config /app/config.yaml --host 0.0.0.0 --port 4000
       --host 0.0.0.0
       --port 4000
       --model gemini/gemini-2.5-flash
